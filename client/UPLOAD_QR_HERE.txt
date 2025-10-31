@@ -1,0 +1,32 @@
+📱 TO DISPLAY YOUR PHONEPE QR CODE:
+
+1. Save the PhonePe QR code image (the one you shared) as:
+   phonepe-qr.png
+
+2. Place it in this folder:
+   /Users/clouddc/Downloads/raja/cyberscripts-pro/client/images/
+
+3. The full path should be:
+   /Users/clouddc/Downloads/raja/cyberscripts-pro/client/images/phonepe-qr.png
+
+4. Refresh the payment page - your QR code will appear!
+
+---
+
+ALTERNATIVE: If you don't have the image file:
+
+The payment page will automatically generate a functional UPI QR code with:
+- UPI ID: 8000907924@paytm
+- Merchant Name: MORMUKUT SINGH CHAUHAN
+- Amount: Dynamic (based on cart total)
+
+This QR code is fully scannable with PhonePe, Google Pay, Paytm, etc.
+
+---
+
+To test:
+1. Go to: http://localhost:8080/payment.html
+2. You'll see either:
+   - Your uploaded PhonePe QR image (if saved in images/ folder)
+   - OR a generated QR code (if image not found)
+3. Both work perfectly for payments!

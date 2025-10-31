@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+            text-align: center;
+        }
+        .qr-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .phonepe-header {
+            background: #5f259f;
+            color: white;
+            padding: 1rem;
+            border-radius: 10px 10px 0 0;
+            margin: -2rem -2rem 1rem -2rem;
+        }
+        h1 { color: #333; }
+        .upi-id {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>PhonePe QR Code Test</h1>
+    
+    <div class="qr-container">
+        <div class="phonepe-header">
+            <i class="fas fa-mobile-alt"></i> PhonePe Payment
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">Scan & Pay Using PhonePe App</p>
+        </div>
+        
+        <div id="qrcode" style="display: inline-block; margin: 1rem 0;"></div>
+        
+        <h3 style="color: #333; margin-top: 1rem;">MORMUKUT SINGH CHAUHAN</h3>
+        
+        <div class="upi-id">
+            8000907924@paytm
+        </div>
+        
+        <p style="color: #666;">Amount: ₹<span id="amount">100.00</span></p>
+    </div>
+
+    <script>
+        // Generate QR Code
+        const amount = 100.00;
+        const upiString = `upi://pay?pa=8000907924@paytm&pn=MORMUKUT SINGH CHAUHAN&am=${amount}&cu=INR`;
+        
+        new QRCode(document.getElementById("qrcode"), {
+            text: upiString,
+            width: 300,
+            height: 300,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+        
+        document.getElementById('amount').textContent = amount.toFixed(2);
+    </script>
+</body>
+</html>

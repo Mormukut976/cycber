@@ -1,0 +1,24 @@
+[build]
+  publish = "."
+  command = "npm run build"
+
+[build.environment]
+  NODE_ENV = "production"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Environment variables for frontend
+[context.production.environment]
+  REACT_APP_API_URL = "https://your-backend.herokuapp.com/api/v1"
+  REACT_APP_STRIPE_PUBLISHABLE_KEY = "pk_live_your_key"

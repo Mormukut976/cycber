@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - CyberScripts Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .checkout-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .checkout-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .checkout-header h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .checkout-content {
+            padding: 2rem;
+        }
+
+        .cart-summary {
+            background: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-total {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .payment-section {
+            margin-top: 2rem;
+        }
+
+        .payment-section h2 {
+            margin-bottom: 1.5rem;
+            color: #1a1a1a;
+        }
+
+        .upi-payment {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .upi-qr {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem auto;
+            max-width: 300px;
+        }
+
+        .upi-details {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .upi-id {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 1rem 0;
+            word-break: break-all;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            margin: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #00ff88;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: #00cc6a;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .transaction-form {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .instructions {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .instructions h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions ol {
+            margin-left: 1.5rem;
+        }
+
+        .instructions li {
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="checkout-header">
+            <h1><i class="fas fa-shopping-cart"></i> Checkout</h1>
+            <p>Complete your purchase securely</p>
+        </div>
+
+        <div class="checkout-content">
+            <!-- Cart Summary -->
+            <div class="cart-summary">
+                <h2>Order Summary</h2>
+                <div id="cart-items-list">
+                    <!-- Cart items will be loaded here -->
+                </div>
+                <div class="cart-total">
+                    <span>Total Amount:</span>
+                    <span id="total-amount">₹0.00</span>
+                </div>
+            </div>
+
+            <!-- UPI Payment Section -->
+            <div class="payment-section">
+                <h2><i class="fas fa-mobile-alt"></i> Pay with UPI</h2>
+                
+                <div class="upi-payment">
+                    <div style="background: #1a1a1a; padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b6/PhonePe_Logo.png" 
+                             alt="PhonePe" 
+                             style="height: 30px; display: block; margin: 0 auto 0.5rem;">
+                        <p style="color: #b19aff; text-align: center; font-weight: 600;">ACCEPTED HERE</p>
+                        <p style="color: white; text-align: center; margin-top: 0.5rem;">Scan & Pay Using PhonePe App</p>
+                    </div>
+                    
+                    <!-- PhonePe QR Code -->
+                    <div class="upi-qr">
+                        <img id="phonepe-qr" alt="PhonePe QR Code" 
+                             style="max-width: 100%; height: auto; border-radius: 10px;">
+                        <p style="text-align: center; margin-top: 1rem; font-weight: bold; font-size: 1.1rem;">MORMUKUT SINGH CHAUHAN</p>
+                    </div>
+
+                    <!-- UPI Details -->
+                    <div class="upi-details">
+                        <h4><i class="fas fa-info-circle"></i> UPI Payment Details</h4>
+                        <div style="margin-top: 1rem;">
+                            <strong>UPI ID:</strong>
+                            <div class="upi-id">8000907924@paytm</div>
+                            <button class="btn btn-secondary" onclick="copyUPI()">
+                                <i class="fas fa-copy"></i> Copy UPI ID
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Instructions -->
+                    <div class="instructions">
+                        <h4>Payment Instructions:</h4>
+                        <ol>
+                            <li>Scan the QR code using any UPI app (Google Pay, PhonePe, Paytm, etc.)</li>
+                            <li>Or manually enter UPI ID: <strong>8000907924@paytm</strong></li>
+                            <li>Complete the payment</li>
+                            <li>Enter the Transaction ID below</li>
+                            <li>Click "Confirm Payment" to complete your order</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Transaction Form -->
+                <div class="transaction-form">
+                    <h3><i class="fas fa-check-double"></i> Confirm Payment</h3>
+                    <p style="color: #666; margin-bottom: 1.5rem;">After completing the payment, please provide the details below for verification</p>
+                    
+                    <form id="payment-form" onsubmit="confirmPayment(event)">
+                        <div class="form-group">
+                            <label>UPI Transaction ID / Reference Number *</label>
+                            <input type="text" id="transaction-id" required 
+                                   placeholder="e.g., 123456789012"
+                                   minlength="12"
+                                   pattern="[0-9A-Za-z]+"
+                                   title="Enter valid transaction ID (alphanumeric)">
+                            <small style="color: #666; font-size: 0.85rem;">
+                                Find this in your payment app under transaction details
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Payment Amount (₹) *</label>
+                            <input type="number" id="payment-amount" required step="0.01" readonly 
+                                   style="background: #f5f5f5;">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Payment Screenshot (Optional - for faster verification)</label>
+                            <input type="file" id="payment-screenshot" accept="image/*"
+                                   style="padding: 10px; border: 2px dashed #ddd; border-radius: 5px; background: #f9f9f9;">
+                            <small style="color: #666; font-size: 0.85rem;">
+                                Upload screenshot of successful payment (PNG, JPG, JPEG)
+                            </small>
+                            <div id="screenshot-preview" style="margin-top: 1rem; display: none;">
+                                <img id="preview-image" style="max-width: 200px; border-radius: 5px; border: 2px solid #00ff88;">
+                                <p style="color: #00cc6a; margin-top: 0.5rem;">
+                                    <i class="fas fa-check-circle"></i> Screenshot uploaded
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Customer Name</label>
+                            <input type="text" id="customer-name" placeholder="Your name" readonly
+                                   style="background: #f5f5f5;">
+                        </div>
+
+                        <div class="instructions" style="background: #fff3cd; border-left-color: #ffc107;">
+                            <h4 style="color: #856404;"><i class="fas fa-exclamation-triangle"></i> Important</h4>
+                            <ul style="margin-left: 1.5rem; color: #856404;">
+                                <li>Ensure payment is completed before submitting</li>
+                                <li>Transaction ID must be correct</li>
+                                <li>Payment will be verified within 24 hours</li>
+                                <li>You'll receive access after verification</li>
+                            </ul>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 1.5rem;">
+                            <button type="submit" class="btn btn-primary" id="submit-btn"
+                                    style="padding: 15px 40px; font-size: 1.1rem;">
+                                <i class="fas fa-check-circle"></i> Submit Payment Details
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelPayment()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://cycber-1.onrender.com/api/v1';
+        const UPI_ID = '8000907924@paytm';
+        let cart = [];
+        let totalAmount = 0;
+        let paymentScreenshot = null;
+
+        // Load cart from localStorage
+        function loadCart() {
+            const cartData = localStorage.getItem('cart');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (cartData) {
+                cart = JSON.parse(cartData);
+            } else {
+                alert('Your cart is empty!');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Set customer name
+            document.getElementById('customer-name').value = user.name || 'Customer';
+
+            // Display cart items
+            const cartList = document.getElementById('cart-items-list');
+            totalAmount = 0;
+
+            cartList.innerHTML = cart.map(item => {
+                const quantity = item.quantity || 1;
+                const itemTotal = item.price * quantity;
+                totalAmount += itemTotal;
+                return `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong>
+                            <p style="color: #666; font-size: 0.9rem; margin-top: 0.25rem;">Qty: ${quantity} × ₹${item.price.toFixed(2)}</p>
+                        </div>
+                        <div style="font-weight: bold;">₹${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('total-amount').textContent = `₹${totalAmount.toFixed(2)}`;
+            document.getElementById('payment-amount').value = totalAmount.toFixed(2);
+
+            // Show static QR code (PhonePe)
+            showPhonePeQR();
+        }
+
+        // Show PhonePe QR Code
+        function showPhonePeQR() {
+            const container = document.querySelector('.upi-qr');
+            
+            // Replace entire container with working QR code
+            container.innerHTML = `
+                <div style="background: #1a1a1a; padding: 1.5rem; border-radius: 10px; text-align: center;">
+                    <p style="color: white; margin-bottom: 1rem; font-size: 1.1rem;">
+                        <i class="fas fa-qrcode"></i> Scan & Pay Using PhonePe App
+                    </p>
+                    <div style="background: white; padding: 1.5rem; border-radius: 10px; display: inline-block;">
+                        <div id="qrcode-generated"></div>
+                    </div>
+                    <p style="color: white; margin-top: 1rem; font-weight: bold; font-size: 1.2rem;">MORMUKUT SINGH CHAUHAN</p>
+                    <p style="color: #b19aff; margin-top: 0.5rem; font-size: 1rem;">
+                        <i class="fas fa-mobile-alt"></i> UPI: 8000907924@paytm
+                    </p>
+                    <p style="color: #00ff88; font-size: 1.5rem; font-weight: bold; margin-top: 1rem;">₹${totalAmount.toFixed(2)}</p>
+                </div>
+            `;
+            
+            // Generate QR code
+            setTimeout(() => {
+                const qrcodeElement = document.getElementById('qrcode-generated');
+                if (qrcodeElement && typeof QRCode !== 'undefined') {
+                    new QRCode(qrcodeElement, {
+                        text: `upi://pay?pa=8000907924@paytm&pn=MORMUKUT SINGH CHAUHAN&am=${totalAmount.toFixed(2)}&cu=INR`,
+                        width: 280,
+                        height: 280,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+            }, 100);
+        }
+
+        // Handle screenshot upload
+        document.addEventListener('DOMContentLoaded', function() {
+            const screenshotInput = document.getElementById('payment-screenshot');
+            screenshotInput?.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB');
+                        e.target.value = '';
+                        return;
+                    }
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        paymentScreenshot = event.target.result;
+                        document.getElementById('preview-image').src = event.target.result;
+                        document.getElementById('screenshot-preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Copy UPI ID
+        function copyUPI() {
+            navigator.clipboard.writeText(UPI_ID).then(() => {
+                alert('UPI ID copied to clipboard!');
+            });
+        }
+
+        // Confirm Payment
+        async function confirmPayment(event) {
+            event.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            const transactionId = document.getElementById('transaction-id').value.trim();
+            
+            if (!transactionId) {
+                alert('Please enter transaction ID');
+                return;
+            }
+
+            if (transactionId.length < 12) {
+                alert('Transaction ID seems invalid. Please check and enter correct ID.');
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!user.id) {
+                alert('Please login to complete purchase');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+            try {
+                // Prepare order data matching backend API structure
+                const orderData = {
+                    items: cart.map(item => ({
+                        productId: item.id || item._id,
+                        name: item.name || item.title,
+                        price: item.price,
+                        quantity: item.quantity || 1,
+                        category: item.category || 'script'
+                    })),
+                    totalAmount: totalAmount,
+                    paymentMethod: 'upi',
+                    upiTransactionId: transactionId,
+                    paymentScreenshot: paymentScreenshot,
+                    customerPhone: user.phone || ''
+                };
+
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Please login to complete purchase');
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    localStorage.removeItem('cart');
+                    
+                    // Show success modal
+                    showSuccessModal(data.data.order);
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                alert('Error processing payment: ' + error.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-check-circle"></i> Submit Payment Details';
+            }
+        }
+
+        // Show success modal
+        function showSuccessModal(order) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.8); display: flex; align-items: center; 
+                justify-content: center; z-index: 9999;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 3rem; border-radius: 15px; text-align: center; max-width: 500px; animation: slideIn 0.3s;">
+                    <div style="width: 80px; height: 80px; background: #00ff88; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                        <i class="fas fa-check" style="font-size: 3rem; color: white;"></i>
+                    </div>
+                    <h2 style="color: #1a1a1a; margin-bottom: 1rem;">Payment Submitted Successfully!</h2>
+                    <p style="color: #666; margin-bottom: 1.5rem;">Your order has been placed and is pending verification.</p>
+                    
+                    <div style="background: #f9f9f9; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; text-align: left;">
+                        <p style="margin: 0.5rem 0;"><strong>Order ID:</strong> ${order._id}</p>
+                        <p style="margin: 0.5rem 0;"><strong>Amount:</strong> ₹${totalAmount.toFixed(2)}</p>
+                        <p style="margin: 0.5rem 0;"><strong>Transaction ID:</strong> ${order.upiTransactionId}</p>
+                        <p style="margin: 0.5rem 0;"><strong>Status:</strong> <span style="color: #ff9800;">Pending Verification</span></p>
+                    </div>
+                    
+                    <div style="background: #e7f3ff; border-left: 4px solid #2196F3; padding: 1rem; margin-bottom: 1.5rem; text-align: left;">
+                        <p style="margin: 0; color: #1976d2; font-size: 0.95rem;">
+                            <strong>Next Steps:</strong><br>
+                            • Payment will be verified within 24 hours<br>
+                            • You'll receive email confirmation<br>
+                            • Products will be accessible after verification<br>
+                            • Check your email for order details
+                        </p>
+                    </div>
+                    
+                    <button onclick="window.location.href='index.html'" 
+                            class="btn btn-primary" 
+                            style="padding: 12px 40px; font-size: 1.1rem;">
+                        <i class="fas fa-home"></i> Back to Home
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        // Cancel payment
+        function cancelPayment() {
+            if (confirm('Are you sure you want to cancel? Your cart will be saved.')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+    
+    <style>
+        @keyframes slideIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</body>
+</html>
